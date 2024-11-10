@@ -21,6 +21,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
     ];
 
     /**
@@ -38,6 +39,19 @@ class User extends Authenticatable
      *
      * @return array<string, string>
      */
+    const ROLE_USER = 'user';
+    const ROLE_ADMIN = 'admin';
+
+    public function isAdmin()
+    {
+        return $this->role === 'admin';  // Assuming 'role' column stores user roles
+    }
+
+    public function isUser()
+    {
+        return $this->role === self::ROLE_USER;
+    }
+
     protected function casts(): array
     {
         return [
@@ -45,4 +59,9 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+    public function setRoleAttribute($value)
+    {
+        $this->attributes['role'] = strtolower($value);  // Ensure role is always stored in lowercase
+    }
+
 }
