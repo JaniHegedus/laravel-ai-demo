@@ -7,6 +7,7 @@ use App\Http\Middleware\Authenticate;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Notification;
 
 class AdminController extends Controller
 {
@@ -35,10 +36,19 @@ class AdminController extends Controller
      *
      * @return \Illuminate\View\View
      */
+
     public function settings()
     {
-        return view('admin.settings');
+        // Fetch the current settings, you may store them in a model or configuration file.
+        $settings = [
+            'site_name' => config('app.name'), // Example, modify as needed
+            'contact_email' => config('mail.from.address'), // Example
+            'maintenance_mode' => config('app.maintenance_mode'), // Example
+        ];
+
+        return view('admin.settings', compact('settings'));
     }
+
 
     /**
      * Show statistics or analytics page.
@@ -58,8 +68,10 @@ class AdminController extends Controller
      */
     public function notifications()
     {
-        // Add any logic to show notifications (e.g., system alerts)
-        return view('admin.notifications');
+        // Fetch notifications for the authenticated admin user
+        $notifications = auth()->user()->notifications()->latest()->get();
+
+        return view('admin.notifications', compact('notifications'));
     }
 
     /**
@@ -154,5 +166,35 @@ class AdminController extends Controller
         $user->delete();
 
         return redirect()->route('admin.users.index')->with('success', 'User deleted successfully.');
+    }
+    /**
+     * Update the site settings.
+     */
+    public function updateSettings(Request $request)
+    {
+        // Validate the request
+        $request->validate([
+            'site_name' => 'required|string|max:255',
+            'contact_email' => 'required|email',
+            'maintenance_mode' => 'sometimes|boolean',
+        ]);
+
+        // Update settings, assuming they are stored in a settings table or config files
+        // Example: Save settings to a database or configuration storage
+        // For demonstration, we'll assume there's a Settings model
+
+        // Site name update
+        config(['app.name' => $request->input('site_name')]);
+
+        // Contact email update
+        config(['mail.from.address' => $request->input('contact_email')]);
+
+        // Maintenance mode update
+        config(['app.maintenance_mode' => $request->input('maintenance_mode', false)]);
+
+        // You might need to persist these changes, e.g., using a database or configuration cache
+
+        // Redirect back with a success message
+        return redirect()->route('admin.settings')->with('status', 'Settings updated successfully.');
     }
 }

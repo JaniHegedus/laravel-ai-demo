@@ -6,6 +6,10 @@ use Illuminate\Support\Facades\Http;
 
 class AIController extends Controller
 {
+    public function index()
+    {
+        return view('demo');
+    }
     public function analyze(Request $request)
     {
         // Get the code input from the request

@@ -11,12 +11,11 @@
     <!-- Header -->
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-3xl font-bold text-black dark:text-white">Admin Dashboard</h1>
-        <a href="{{ route('logout') }}" class="text-blue-500 hover:text-blue-700">Logout</a>
     </div>
 
     <!-- Main Content -->
     <div class="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-lg">
-        <h2 class="text-2xl font-semibold mb-4 text-black dark:text-white">Welcome, Admin</h2>
+        <h2 class="text-2xl font-semibold mb-4 text-black dark:text-white">Welcome, {{ Auth::user()->name }}</h2>
         <p class="text-black dark:text-white">This is the admin dashboard where you can manage users, view statistics, and configure settings.</p>
 
         <!-- Example Sections -->

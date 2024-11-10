@@ -13,6 +13,10 @@ use App\Http\Controllers\AdminController;
 Route::get('/', function () {
     return view('welcome');
 })->name('home');
+
+Route::get('/analyze', [\App\Http\Controllers\AIController::class, 'index'])->name('analyze');
+Route::post('/analyze', [\App\Http\Controllers\AIController::class, 'analyze'])->name('analyze');
+
 // Add this route to toggle dark mode
 Route::post('/toggle-dark-mode', function () {
     // Toggle the dark mode session value
@@ -34,7 +38,8 @@ Route::get('/dashboard', function () {
 
 // Authenticated user routes
 Route::middleware([Authenticate::class])->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::get('/profile', [ProfileController::class, 'index'])->name('profile.view');
+    Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/demo', function () {return view('demo');});
@@ -43,19 +48,20 @@ Route::middleware([Authenticate::class])->group(function () {
 // Admin-specific routes
 Route::middleware([Authenticate::class, AdminMiddleware::class])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
-    Route::get('/demo', function () {return view('demo');});
 
     // User management routes within the admin section
     Route::get('/users', [AdminUserController::class, 'index'])->name('users.index'); // View Users
     Route::get('/users/create', [AdminUserController::class, 'create'])->name('users.create'); // Create User
     Route::post('/users', [AdminUserController::class, 'store'])->name('users.store'); // Store User
     Route::get('/users/{user}/edit', [AdminUserController::class, 'edit'])->name('users.edit'); // Edit User
-    Route::put('/users/{user}', [AdminUserController::class, 'update'])->name('users.update'); // Update User
+    Route::patch('/users/{user}', [AdminUserController::class, 'update'])->name('users.update'); // Update User
     Route::delete('/users/{user}', [AdminUserController::class, 'destroy'])->name('users.destroy'); // Delete User
     Route::post('/users/revoke', [AdminUserController::class, 'revokeAdmin'])->name('users.revoke-admin'); // Revoke admin
 
     // Additional admin routes
-    Route::get('/settings', [AdminController::class, 'settings'])->name('settings'); // Site Settings
+    Route::get('/settings', [AdminController::class, 'settings'])->name('settings'); // View Site Settings
+    Route::patch('/settings', [AdminController::class, 'updateSettings'])->name('settings.update'); // Update Site Settings
+
     Route::get('/statistics', [AdminController::class, 'statistics'])->name('statistics'); // View Statistics
     Route::get('/notifications', [AdminController::class, 'notifications'])->name('notifications'); // Notifications
 });

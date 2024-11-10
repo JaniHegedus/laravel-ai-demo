@@ -24,7 +24,7 @@
         </div>-->
 
         <!-- Main Content -->
-        <div class="max-w-2xl mx-auto bg-white dark:bg-gray-800 p-8 rounded-lg shadow-lg">
+        <div class=" mx-auto bg-white dark:bg-gray-800 p-8 rounded-lg shadow-lg">
             @yield('content')
         </div>
     </div>
