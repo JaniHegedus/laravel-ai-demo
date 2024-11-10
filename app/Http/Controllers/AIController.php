@@ -12,7 +12,7 @@ class AIController extends Controller
         $code = $request->input('code');
 
         // Send the code to the Python API
-        $response = Http::post('http://localhost:5000/analyze', [
+        $response = Http::timeout(180)->post('http://localhost:5000/analyze', [
             'code' => $code,
         ]);
 
