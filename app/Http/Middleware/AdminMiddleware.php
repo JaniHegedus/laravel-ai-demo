@@ -18,8 +18,16 @@ class AdminMiddleware
     public function handle(Request $request, Closure $next): Response
     {
         // Exclude redirects for the login page, home page, or already authenticated routes
+        if(auth()->check()){
+            if(auth()->user()->isAdmin()){
+                // Redirect non-admin users to the home page or a safe route
+                return $next($request);
 
-        // Redirect non-admin users to the home page or a safe route
-        return $next($request);
+            }
+            else{
+                redirect(route('home'));
+            }
+        }
+        return redirect(route('login'));
     }
 }

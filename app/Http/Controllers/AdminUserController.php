@@ -9,8 +9,6 @@ class AdminUserController extends Controller
 {
     /**
      * Display a listing of the users.
-     *
-     * @return \Illuminate\View\View
      */
     public function index()
     {
@@ -20,8 +18,6 @@ class AdminUserController extends Controller
 
     /**
      * Show the form for creating a new user.
-     *
-     * @return \Illuminate\View\View
      */
     public function create()
     {
@@ -30,9 +26,6 @@ class AdminUserController extends Controller
 
     /**
      * Store a newly created user in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\RedirectResponse
      */
     public function store(Request $request)
     {
@@ -53,9 +46,6 @@ class AdminUserController extends Controller
 
     /**
      * Show the form for editing the specified user.
-     *
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\View\View
      */
     public function edit(User $user)
     {
@@ -64,28 +54,29 @@ class AdminUserController extends Controller
 
     /**
      * Update the specified user in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Http\RedirectResponse
      */
     public function update(Request $request, User $user)
     {
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
+            'password' => 'nullable|string|min:8|confirmed', // Optional password update
         ]);
 
-        $user->update($request->only('name', 'email'));
+        $user->name = $request->name;
+        $user->email = $request->email;
+
+        if ($request->filled('password')) {
+            $user->password = bcrypt($request->password);
+        }
+
+        $user->save();
 
         return redirect()->route('admin.users.index')->with('success', 'User updated successfully.');
     }
 
     /**
      * Remove the specified user from storage.
-     *
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy(User $user)
     {
@@ -96,12 +87,10 @@ class AdminUserController extends Controller
 
     /**
      * Make the user an admin.
-     *
-     * @param \App\Models\User $user
-     * @return \Illuminate\Http\RedirectResponse
      */
-    public function makeAdmin(User $user)
+    public function makeAdmin(Request $request)
     {
+        $user = User::findOrFail($request->user_id);
         $user->role = 'admin';
         $user->save();
 
@@ -110,12 +99,10 @@ class AdminUserController extends Controller
 
     /**
      * Revoke the admin role from the user.
-     *
-     * @param \App\Models\User $user
-     * @return \Illuminate\Http\RedirectResponse
      */
-    public function revokeAdmin(User $user)
+    public function revokeAdmin(Request $request)
     {
+        $user = User::findOrFail($request->user_id);
         $user->role = 'user';
         $user->save();
 

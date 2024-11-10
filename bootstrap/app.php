@@ -26,7 +26,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
             ]); // Add your custom AdminMiddleware here
         //$middleware->append(\App\Http\Middleware\Authenticate::class);
-        $middleware->append(\App\Http\Middleware\AdminMiddleware::class);
+        //$middleware->append(\App\Http\Middleware\AdminMiddleware::class);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

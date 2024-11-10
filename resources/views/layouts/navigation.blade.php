@@ -12,7 +12,7 @@
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('dashboard') || request()->routeIs('admin.dashboard')">
+                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('user.dashboard') || request()->routeIs('admin.dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
                 </div>
@@ -55,6 +55,10 @@
                         </x-slot>
                     </x-dropdown>
                 </div>
+            @else
+                <x-nav-link :href="route('login')" :active="request()->routeIs('login')">
+                    {{ __('Log In') }}
+                </x-nav-link>
             @endauth
 
             <!-- Hamburger -->
